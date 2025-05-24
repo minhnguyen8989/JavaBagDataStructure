@@ -1,25 +1,36 @@
 public class Main {
     public static void main(String[] args) {
 
-        Bag<String> myBag = new Bag<>();
+        Bag<String> myBag1 = new Bag<>();
 
-        myBag.add("apple");
-        myBag.add("banana");
-        myBag.add("apple");
-        myBag.add("orange");
-        myBag.add("banana");
-        myBag.add("grape");
+        myBag1.add("apple");
+        myBag1.add("banana");
+        myBag1.add("apple");
+        myBag1.add("orange");
+        myBag1.add("banana");
+        myBag1.add("grape");
 
-        System.out.println("Bag contents: " + myBag);
-        System.out.println("Bag contains 'apple': " + myBag.contains("apple"));
-        System.out.println("Bag contains 'kiwi': " + myBag.contains("kiwi"));
-        System.out.println("Count of 'banana': " + myBag.count("banana"));
-        System.out.println("Count of 'apple': " + myBag.count("apple"));
+        Bag<String> myBag2 = new Bag<>();
+        myBag2.add("banana");
+        myBag2.add("cherry");
+        myBag2.add("banana");
 
-        myBag.remove("banana");
+        System.out.println("Bag1 contents: " + myBag1);
+        System.out.println("Bag2 contents: " + myBag2);
 
-        System.out.println("Bag contents after removing one 'banana': " + myBag);
-        System.out.println("Bag contains 'banana': " + myBag.contains("banana"));
-        System.out.println("Count of 'banana': " + myBag.count("banana"));
+        System.out.println("Bag1 count of banana: " + myBag1.count("banana"));
+        System.out.println("Bag2 count of apple: " + myBag2.count("apple"));
+
+        System.out.println("Number element of bag1: " + myBag1.size() + " elements: ");
+        System.out.println("Number element of bag2: " + myBag2.size() + " elements: ");
+
+        myBag1.merge(myBag2);
+        System.out.println("Bag1 after merge with Bag2: " + myBag1);
+        System.out.println("Number element of mergeBag: " + myBag1.size() + " elements: ");
+
+        Bag<String> distinctBag = myBag1.distinct();
+        System.out.println("Distinct elements in the merged bag: " + distinctBag);
+        System.out.println("Number element of distinctBag: " + distinctBag.size() + " elements: ");
+
     }
 }
