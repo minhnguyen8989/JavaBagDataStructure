@@ -1,6 +1,5 @@
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -10,13 +9,13 @@ import java.util.Set;
  * @param <T> the type of elements stored in the bag
  */
 public class Bag<T> {
-    private List<T> items;
+    private Map<T, Integer> items;
 
     /**
      * Constructs an empty Bag.
      */
     public Bag() {
-        items = new ArrayList<>();
+        items = new HashMap<>();
     }
 
     /**
@@ -25,16 +24,25 @@ public class Bag<T> {
      * @param item the item to be added
      */
     public void add(T item) {
-        items.add(item);
+        items.put(item, items.getOrDefault(item, 0) + 1);
     }
 
     /**
-     * Removes the first occurrence of the specified item from the bag, if present.
+     * Removes one occurrence of the specified item from the bag, if present.
      *
      * @param item the item to be removed
+     * @return true if an item was removed, false if the item was not found
      */
-    public void remove(T item) {
-        items.remove(item); // removes first occurrence
+    public boolean remove(T item) {
+        Integer count = items.get(item);
+        if (count == null) {
+            return false;
+        } else if (count == 1) {
+            items.remove(item);
+        } else {
+            items.put(item, count - 1);
+        }
+        return true;
     }
 
     /**
@@ -44,7 +52,7 @@ public class Bag<T> {
      * @return {@code true} if the item is in the bag, {@code false} otherwise
      */
     public boolean contains(T item) {
-        return items.contains(item);
+        return items.containsKey(item);
     }
 
     /**
@@ -54,13 +62,7 @@ public class Bag<T> {
      * @return the number of times the item occurs in the bag
      */
     public int count(T item) {
-        int count = 0;
-        for (T i : items) {
-            if (i.equals(item)) {
-                count++;
-            }
-        }
-        return count;
+        return items.getOrDefault(item, 0);
     }
 
     /**
@@ -69,7 +71,11 @@ public class Bag<T> {
      * @return the number of elements in the bag
      */
     public int size() {
-        return items.size();
+        int total = 0;
+        for (int count : items.values()) {
+            total += count;
+        }
+        return total;
     }
 
     /**
@@ -79,22 +85,22 @@ public class Bag<T> {
      * @param otherBag the bag whose elements are to be added to this bag
      */
     public void merge(Bag<T> otherBag) {
-        this.items.addAll(otherBag.items);
+        for (Map.Entry<T, Integer> entry : otherBag.items.entrySet()) {
+            T key = entry.getKey();
+            int count = entry.getValue();
+            items.put(key, items.getOrDefault(key, 0) + count);
+        }
     }
 
     /**
      * Returns a new bag containing only the distinct elements from this bag.
-     * The order of first occurrence is preserved.
      *
      * @return a new Bag instance with distinct elements
      */
     public Bag<T> distinct() {
         Bag<T> distinctBag = new Bag<>();
-        Set<T> seen = new HashSet<>();
-        for (T item : items) {
-            if (seen.add(item)) {
-                distinctBag.add(item);
-            }
+        for (T key : items.keySet()) {
+            distinctBag.add(key);
         }
         return distinctBag;
     }
@@ -102,7 +108,7 @@ public class Bag<T> {
     /**
      * Returns a string representation of the bag.
      *
-     * @return a string listing all items in the bag
+     * @return a string listing all items and their counts in the bag
      */
     @Override
     public String toString() {
